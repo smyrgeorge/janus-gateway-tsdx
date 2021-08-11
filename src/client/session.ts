@@ -1,213 +1,210 @@
-import Promise from 'bluebird'
-import TTransactionGateway from './tx/t-transaction-gateway'
-import JanusError from './misc/error'
-import Timer from './misc/timer'
-import Transaction from './tx/transaction'
-import Plugin from './plugin'
-import Connection from './connection'
-import JanusMessage from './misc/message'
-import {isNaturalNumber} from './misc/utils'
-import {MediaDevices} from '../plugin/base/shims/media-devices-shim'
-import {WebRTC} from '../plugin/base/shims/webrtc-shim'
+import Promise from 'bluebird';
+import TTransactionGateway from './tx/t-transaction-gateway';
+import JanusError from './misc/error';
+import Timer from './misc/timer';
+import Transaction from './tx/transaction';
+import Plugin from './plugin';
+import Connection from './connection';
+import JanusMessage from './misc/message';
+import { isNaturalNumber } from './misc/utils';
+import { MediaDevices } from '../plugin/base/shims/media-devices-shim';
+import { WebRTC } from '../plugin/base/shims/webrtc-shim';
 
 class Session extends TTransactionGateway {
-  private connection: Connection | null
-  private readonly id: string
-  private plugins: {}
-  private keepAlivePeriod: number
-  private keepAliveTimer?: Timer | null
-  private readonly mediaDevices: MediaDevices
-  private readonly webRTC: WebRTC
+  private connection: Connection | null;
+  private readonly id: string;
+  private plugins: {};
+  private keepAlivePeriod: number;
+  private keepAliveTimer?: Timer | null;
+  private readonly mediaDevices: MediaDevices;
+  private readonly webRTC: WebRTC;
 
   constructor(connection: Connection, id: string, mediaDevices: MediaDevices, webRTC: WebRTC) {
-    super()
+    super();
 
-    this.connection = connection
-    this.id = id
-    this.plugins = {}
-    this.keepAlivePeriod = 30000
-    this.mediaDevices = mediaDevices
-    this.webRTC = webRTC
+    this.connection = connection;
+    this.id = id;
+    this.plugins = {};
+    this.keepAlivePeriod = 30000;
+    this.mediaDevices = mediaDevices;
+    this.webRTC = webRTC;
 
     if (this.connection.getOptions().keepalive) {
-      this.startKeepAlive()
+      this.startKeepAlive();
     }
 
-    connection.on('close', () => this._destroy())
+    connection.on('close', () => this._destroy());
   }
 
   getConnection(): Connection | null {
-    return this.connection
+    return this.connection;
   }
 
   getId(): string {
-    return this.id
+    return this.id;
   }
 
   send(message: any): Promise<any> {
     if (!this.connection) {
-      return Promise.reject(new Error(`Can not send message over destroyed ${this}.`))
+      return Promise.reject(new Error(`Can not send message over destroyed ${this}.`));
     }
 
-    message['session_id'] = this.id
+    message['session_id'] = this.id;
     if (this.keepAliveTimer) {
-      this.keepAliveTimer.reset()
+      this.keepAliveTimer.reset();
     }
 
-    return this.connection.send(message)
+    return this.connection.send(message);
   }
 
   attachPlugin(name: string): Promise<any> {
-    return this.sendSync({janus: 'attach', plugin: name})
+    return this.sendSync({ janus: 'attach', plugin: name });
   }
 
   destroy(): Promise<any> {
-    return this.sendSync({janus: 'destroy'})
+    return this.sendSync({ janus: 'destroy' });
   }
 
   cleanup(): Promise<any> {
-    return this._destroy()
+    return this._destroy();
   }
 
   hasPlugin(pluginId: string): boolean {
-    return !!this.getPlugin(pluginId)
+    return !!this.getPlugin(pluginId);
   }
 
   getPlugin(pluginId: string): Plugin {
-    return this.plugins[pluginId]
+    return this.plugins[pluginId];
   }
 
   getPluginList(): Plugin[] {
-    return Object.keys(this.plugins).map((id) => this.plugins[id])
+    return Object.keys(this.plugins).map(id => this.plugins[id]);
   }
 
   addPlugin(plugin: Plugin) {
-    this.plugins[plugin.getId()] = plugin
-    plugin.once('detach', () => this.removePlugin(plugin.getId()))
+    this.plugins[plugin.getId()] = plugin;
+    plugin.once('detach', () => this.removePlugin(plugin.getId()));
   }
 
   removePlugin(pluginId: string) {
-    delete this.plugins[pluginId]
+    delete this.plugins[pluginId];
   }
 
   processOutcomeMessage(message: any): Promise<any> {
-    let janusMessage = message['janus']
+    let janusMessage = message['janus'];
     if ('attach' === janusMessage) {
-      return this._onAttach(message)
+      return this._onAttach(message);
     }
 
     if ('destroy' === janusMessage) {
-      return this._onDestroy(message)
+      return this._onDestroy(message);
     }
 
-    let pluginId = message['handle_id']
+    let pluginId = message['handle_id'];
     if (pluginId) {
       if (this.hasPlugin(pluginId)) {
-        return this.getPlugin(pluginId).processOutcomeMessage(message)
+        return this.getPlugin(pluginId).processOutcomeMessage(message);
       } else {
-        return Promise.reject(new Error(`Invalid plugin [${pluginId}].`))
+        return Promise.reject(new Error(`Invalid plugin [${pluginId}].`));
       }
     }
 
-    return Promise.resolve(message)
+    return Promise.resolve(message);
   }
 
   processIncomeMessage(msg: JanusMessage): Promise<any> {
-    let pluginId = msg.get('handle_id') ?? msg.get('sender')
+    let pluginId = msg.get('handle_id') ?? msg.get('sender');
     if (pluginId && this.hasPlugin(pluginId)) {
-      return this.getPlugin(pluginId).processIncomeMessage(msg)
+      return this.getPlugin(pluginId).processIncomeMessage(msg);
     }
 
-    return Promise
-      .try(() => {
-        if (pluginId && !this.hasPlugin(pluginId)) {
-          throw new Error(`Invalid plugin [${pluginId}].`)
-        }
-        if ('timeout' === msg.get('janus')) {
-          return this._onTimeout(msg)
-        }
-        return this.defaultProcessIncomeMessage(msg)
-      })
+    return Promise.try(() => {
+      if (pluginId && !this.hasPlugin(pluginId)) {
+        throw new Error(`Invalid plugin [${pluginId}].`);
+      }
+      if ('timeout' === msg.get('janus')) {
+        return this._onTimeout(msg);
+      }
+      return this.defaultProcessIncomeMessage(msg);
+    })
       .then(() => this.emit('message', msg))
-      .catch(error => this.emit('error', error))
+      .catch(error => this.emit('error', error));
   }
 
   toString() {
-    return 'Session' + JSON.stringify({id: this.id})
+    return 'Session' + JSON.stringify({ id: this.id });
   }
 
   private startKeepAlive() {
-    let keepAlive = this.connection?.getOptions().keepalive
+    let keepAlive = this.connection?.getOptions().keepalive;
 
     if (keepAlive && isNaturalNumber(keepAlive) && keepAlive < 59000) {
-      this.keepAlivePeriod = keepAlive as number
+      this.keepAlivePeriod = keepAlive as number;
     } else {
-      this.keepAlivePeriod = 30000
+      this.keepAlivePeriod = 30000;
     }
 
     this.keepAliveTimer = new Timer(() => {
-      this.send({janus: 'keepalive'}).catch(error => {
+      this.send({ janus: 'keepalive' }).catch(error => {
         if (this.connection?.isClosed()) {
-          this.stopKeepAlive()
+          this.stopKeepAlive();
         }
-        throw error
-      })
-    }, this.keepAlivePeriod)
-    this.keepAliveTimer.start()
+        throw error;
+      });
+    }, this.keepAlivePeriod);
+    this.keepAliveTimer.start();
   }
 
   private stopKeepAlive() {
     if (this.keepAliveTimer) {
-      this.keepAliveTimer.stop()
-      this.keepAliveTimer = null
+      this.keepAliveTimer.stop();
+      this.keepAliveTimer = null;
     }
   }
 
   private _destroy(): Promise<any> {
     if (!this.connection) {
-      return Promise.resolve()
+      return Promise.resolve();
     }
-    this.stopKeepAlive()
-    return Promise
-      .map(this.getPluginList(), plugin => plugin.cleanup())
-      .finally(() => {
-        this.plugins = {}
-        this.connection = null
-        this.emit('destroy')
-      })
+    this.stopKeepAlive();
+    return Promise.map(this.getPluginList(), plugin => plugin.cleanup()).finally(() => {
+      this.plugins = {};
+      this.connection = null;
+      this.emit('destroy');
+    });
   }
 
   private _onTimeout(msg): Promise<any> {
-    return this._destroy().return(msg)
+    return this._destroy().return(msg);
   }
 
   private _onDestroy(outMsg): Promise<any> {
     this.addTransaction(
       new Transaction(outMsg['transaction'], msg => {
         if ('success' === msg.get('janus')) {
-          return this._destroy().return(msg)
+          return this._destroy().return(msg);
         } else {
-          throw new JanusError(msg)
+          throw new JanusError(msg);
         }
       })
-    )
-    return Promise.resolve(outMsg)
+    );
+    return Promise.resolve(outMsg);
   }
 
   private _onAttach(outMsg: any): Promise<any> {
     this.addTransaction(
       new Transaction(outMsg['transaction'], msg => {
-          if ('success' === msg.get('janus')) {
-            let pluginId = msg.get('data', 'id')
-            this.addPlugin(Plugin.create(this, outMsg['plugin'], pluginId, this.mediaDevices, this.webRTC))
-            return this.getPlugin(pluginId)
-          } else {
-            throw new JanusError(msg)
-          }
+        if ('success' === msg.get('janus')) {
+          let pluginId = msg.get('data', 'id');
+          this.addPlugin(Plugin.create(this, outMsg['plugin'], pluginId, this.mediaDevices, this.webRTC));
+          return this.getPlugin(pluginId);
+        } else {
+          throw new JanusError(msg);
         }
-      ))
-    return Promise.resolve(outMsg)
+      })
+    );
+    return Promise.resolve(outMsg);
   }
 }
 
-export default Session
+export default Session;

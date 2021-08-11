@@ -1,10 +1,10 @@
-import JanusMessage from './message'
+import JanusMessage from './message';
 
 class JanusError extends Error {
   // @ts-ignore
-  private janusMessage: JanusMessage
+  private janusMessage: JanusMessage;
   // @ts-ignore
-  private code: any
+  private code: any;
 
   constructor(message: JanusMessage) {
     super();
