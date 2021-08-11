@@ -30,7 +30,7 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "janus-gateway-ts",
+  "name": "janus-gateway-tsdx",
   "author": "George Smyrnaios",
   "module": "dist/janus-gateway-ts.esm.js",
   "size-limit": [
