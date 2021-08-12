@@ -1,7 +1,6 @@
 import VideoRoom from './video-room';
 import { JoinInfo, JoinOptions, RemoteVideo } from '../../plugin/dto/video-room';
-import MediaDevicesShim, { MediaDevices } from '../../plugin/base/shims/media-devices-shim';
-import WebRTCShim, { WebRTC } from '../../plugin/base/shims/webrtc-shim';
+import { MediaDevices, WebRTC } from '../../plugin/base/shims/definitions';
 
 class VideoRoomBuilder {
   // Media constraints documentation here:
@@ -12,12 +11,7 @@ class VideoRoomBuilder {
   // Room
   private readonly room: VideoRoom;
 
-  constructor(
-    server: string,
-    mediaConstraints: MediaStreamConstraints,
-    mediaDevices: MediaDevices = new MediaDevicesShim(),
-    webRTC: WebRTC = new WebRTCShim()
-  ) {
+  constructor(server: string, mediaConstraints: MediaStreamConstraints, mediaDevices: MediaDevices, webRTC: WebRTC) {
     this.mediaConstraints = mediaConstraints;
     this.room = new VideoRoom(server, { keepalive: true }, mediaDevices, webRTC);
     this.room.onRoomJoined((info: JoinInfo) => console.info('Room joined:', info));

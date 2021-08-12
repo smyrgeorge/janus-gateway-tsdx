@@ -1,10 +1,5 @@
 import webrtc from 'webrtcsupport';
-
-export interface WebRTC {
-  newRTCPeerConnection: (config, constraints) => RTCPeerConnection;
-  newRTCSessionDescription: (jsep: RTCSessionDescription) => RTCSessionDescription;
-  newRTCIceCandidate: (candidate: RTCIceCandidate) => RTCIceCandidate;
-}
+import { WebRTC } from './definitions';
 
 class WebRTCShim implements WebRTC {
   newRTCPeerConnection = (config, constraints): RTCPeerConnection => {

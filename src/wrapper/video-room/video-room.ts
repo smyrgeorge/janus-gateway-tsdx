@@ -5,8 +5,7 @@ import { JoinInfo, JoinOptions, RemoteVideo } from '../../plugin/dto/video-room'
 import Client from '../../client/client';
 import Session from '../../client/session';
 import VideoRoomPlugin from '../../plugin/video-room-plugin';
-import MediaDevicesShim, { MediaDevices } from '../../plugin/base/shims/media-devices-shim';
-import WebRTCShim, { WebRTC } from '../../plugin/base/shims/webrtc-shim';
+import { MediaDevices, WebRTC } from '../../plugin/base/shims/definitions';
 
 export class VideoRoom {
   private readonly address: string;
@@ -22,8 +21,8 @@ export class VideoRoom {
   constructor(
     address: string,
     clientOptions: ConnectionOptions = { keepalive: true },
-    mediaDevices: MediaDevices = new MediaDevicesShim(),
-    webRTC: WebRTC = new WebRTCShim()
+    mediaDevices: MediaDevices,
+    webRTC: WebRTC
   ) {
     this.address = address;
     this.clientOptions = clientOptions;

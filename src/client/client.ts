@@ -1,6 +1,5 @@
 import Connection, { ConnectionOptions } from './connection';
-import MediaDevicesShim, { MediaDevices } from '../plugin/base/shims/media-devices-shim';
-import WebRTCShim, { WebRTC } from '../plugin/base/shims/webrtc-shim';
+import { MediaDevices, WebRTC } from '../plugin/base/shims/definitions';
 
 class Client {
   private readonly address: string;
@@ -11,8 +10,8 @@ class Client {
   constructor(
     address: string,
     options: ConnectionOptions = { keepalive: true },
-    mediaDevices: MediaDevices = new MediaDevicesShim(),
-    webRTC: WebRTC = new WebRTCShim()
+    mediaDevices: MediaDevices,
+    webRTC: WebRTC
   ) {
     this.address = address;
     this.options = options;

@@ -1,8 +1,5 @@
 import Promise from 'bluebird';
-
-export interface MediaDevices {
-  getUserMedia: (constants: MediaStreamConstraints) => Promise<MediaStream>;
-}
+import { MediaDevices } from './definitions';
 
 class MediaDevicesShim implements MediaDevices {
   getUserMedia = (constraints: MediaStreamConstraints): Promise<MediaStream> => {
