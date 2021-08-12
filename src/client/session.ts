@@ -7,8 +7,8 @@ import Plugin from './plugin';
 import Connection from './connection';
 import JanusMessage from './misc/message';
 import { isNaturalNumber } from './misc/utils';
-import { MediaDevices } from '../plugin/base/shims/media-devices-shim';
-import { WebRTC } from '../plugin/base/shims/webrtc-shim';
+import { MediaDevices } from '../plugin/base/shims/definitions';
+import { WebRTC } from '../plugin/base/shims/definitions';
 
 class Session extends TTransactionGateway {
   private connection: Connection | null;
