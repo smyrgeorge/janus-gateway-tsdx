@@ -13,7 +13,7 @@ In this case we need to create some shim classes and pass them to Client constru
 - [ ] Tests
 - [ ] Remove bluebird library
 - [ ] Documentation in code files
-- [ ] Documentation for React Native 
+- [x] Documentation for React Native
 
 ## Example of usage
 See the [VideoRoom](src/wrapper/video-room/video-room.ts) and [VideoRoomBuilder](src/wrapper/video-room/video-room-builder.ts)
@@ -47,6 +47,51 @@ If you require a plugin that is not implemented then you need to write it on you
 * [StreamingPlugin](src/plugin/streaming-plugin.ts)
 * [RtpBroadcastPlugin](src/plugin/rtp-broadcast-plugin.ts)
 * [VideoRoomPlugin](src/plugin/video-room-plugin.ts)
+
+
+### Shims for React native
+
+Media devices shim:
+```typescript
+import {MediaDevices} from "janus-gateway-tsdx/src/plugin/base/shims/definitions";
+import {mediaDevices} from 'react-native-webrtc';
+
+class MediaDevicesReactNativeShim implements MediaDevices {
+  getUserMedia = (constraints) => {
+    return Promise.resolve(mediaDevices.getUserMedia(constraints));
+  };
+}
+
+export default MediaDevicesReactNativeShim
+```
+
+WebRTC shim:
+```typescript
+import {RTCIceCandidate, RTCPeerConnection, RTCSessionDescription} from 'react-native-webrtc';
+import {WebRTC} from "janus-gateway-tsdx/dist/plugin/base/shims/definitions";
+
+class WebRTCReactNativeShim implements WebRTC {
+  newRTCPeerConnection = (config, constraints): RTCPeerConnection => {
+    return new RTCPeerConnection(config, constraints);
+  };
+
+  newRTCSessionDescription = (jsep: RTCSessionDescription): RTCSessionDescription => {
+    return new RTCSessionDescription(jsep);
+  };
+
+  newRTCIceCandidate = (candidate: RTCIceCandidate): RTCIceCandidate => {
+    return new RTCIceCandidate(candidate);
+  };
+}
+
+export default WebRTCReactNativeShim
+```
+
+Then use it:
+```typescript
+import Client from '../../client/client';
+let client = new Client(this.address, this.clientOptions, new MediaDevicesReactNativeShim(), new WebRTCReactNativeShim);
+```
 
 ### How to write a Plugin
 
