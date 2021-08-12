@@ -132,7 +132,7 @@ class Session extends TTransactionGateway {
   }
 
   toString() {
-    return 'Session' + JSON.stringify({ id: this.id });
+    return `[Session] ${JSON.stringify({ id: this.id })}`;
   }
 
   private startKeepAlive() {

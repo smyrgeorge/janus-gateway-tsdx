@@ -75,10 +75,10 @@ class Websocket extends EventEmitter {
     this.emit('close');
   }
 
-  private _installW3cListeners() {
+  private initListeners() {
     this.ws.onmessage = msg => {
-      let parsedMessage = JSON.parse(msg.data as string);
-      this.onMessage(parsedMessage);
+      let parsed = JSON.parse(msg.data as string);
+      this.onMessage(parsed);
     };
 
     this.ws.onerror = error => this.emit('error', error);
@@ -87,7 +87,7 @@ class Websocket extends EventEmitter {
 
   private _onOpen(webSocket: WebSocket) {
     if (typeof webSocket.readyState !== 'undefined') {
-      this._installW3cListeners();
+      this.initListeners();
     } else {
       throw new Error('Trying to instantiate WebsocketConnection with unknown Websocket.');
     }

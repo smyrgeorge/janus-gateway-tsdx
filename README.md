@@ -6,13 +6,14 @@ janus-gateway-tsdx [![CI](https://github.com/smyrgeorge/janus-gateway-ts/actions
 Modern typescript client for [janus gateway](https://janus.conf.meetecho.com/). Based on websockets.
 The original client can be found here https://janus.conf.meetecho.com/docs/rest.html.
 This library is a rewrite of [janus-gateway-js](https://github.com/sjkummer/janus-gateway-js) in typescript.
-Also, in this library is possible to be used with **react-native**.
+Also, this library is possible to be used with **react-native**.
 In this case we need to create some shim classes and pass them to Client constructor, see [Client](src/client/client.ts). 
 
 ## TODO
-- [ ] Tests
-- [ ] Remove bluebird library
-- [ ] Documentation in code files
+- [ ] Remove bluebird Promise library
+- [ ] Make use of async/await
+- [ ] Write some tests
+- [ ] Write some proper documentation
 - [x] Documentation for React Native
 
 ## Example of usage
@@ -24,7 +25,7 @@ See the [VideoRoom](src/wrapper/video-room/video-room.ts) and [VideoRoomBuilder]
 
 ## Build
 
-Project has a simple build. Just run `yarn`
+Just run `yarn build`
 
 
 ## Client API

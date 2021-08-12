@@ -96,7 +96,7 @@ class Plugin extends TTransactionGateway {
   }
 
   toString() {
-    return `Plugin${JSON.stringify({ id: this.id, name: this.name })}`;
+    return `[Plugin] ${JSON.stringify({ id: this.id, name: this.name })}`;
   }
 
   sendWithTransaction(options: any): Promise<any> {

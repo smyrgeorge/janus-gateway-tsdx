@@ -123,7 +123,7 @@ class Connection extends TTransactionGateway {
       if (this.hasSession(sessionId)) {
         return this.getSession(sessionId).processOutcomeMessage(message);
       } else {
-        return Promise.reject(new Error('Invalid session: [' + sessionId + ']'));
+        return Promise.reject(new Error(`Invalid session: [${sessionId}]`));
       }
     }
 
@@ -140,7 +140,7 @@ class Connection extends TTransactionGateway {
 
     return Promise.try(() => {
       if (sessionId && !this.hasSession(sessionId)) {
-        throw new Error('Invalid session: [' + sessionId + ']');
+        throw new Error(`Invalid session: [${sessionId}]`);
       }
 
       return this.defaultProcessIncomeMessage(msg);
@@ -148,10 +148,7 @@ class Connection extends TTransactionGateway {
   }
 
   toString() {
-    return `JanusConnection${JSON.stringify({
-      id: this.id,
-      address: this.address,
-    })}`;
+    return `[Connection] ${JSON.stringify({ id: this.id, address: this.address })}`;
   }
 
   private _onCreate(outMsg: JanusMessage): Promise<JanusMessage> {
