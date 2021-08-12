@@ -1,8 +1,7 @@
 import Promise from 'bluebird';
 import Plugin from '../../client/plugin';
-import { MediaDevices } from './shims/media-devices-shim';
+import { MediaDevices, WebRTC } from './shims/definitions';
 import JanusMessage from '../../client/misc/message';
-import { WebRTC } from './shims/webrtc-shim';
 import Session from '../../client/session';
 
 class MediaPlugin extends Plugin {

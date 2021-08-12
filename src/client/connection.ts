@@ -5,8 +5,7 @@ import Transaction from './tx/transaction';
 import Websocket from './websocket';
 import Session from './session';
 import JanusMessage from './misc/message';
-import { MediaDevices } from '../plugin/base/shims/media-devices-shim';
-import { WebRTC } from '../plugin/base/shims/webrtc-shim';
+import { MediaDevices, WebRTC } from '../plugin/base/shims/definitions';
 
 export interface RTCPeerConnectionOptions {
   config?: any;
