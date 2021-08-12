@@ -1,6 +1,20 @@
 {
+  "name": "janus-gateway-tsdx",
+  "author": "Giorgos Smyrnaios <smyrgeorge@gmail.com>",
   "version": "0.1.6",
   "license": "MIT",
+  "description": "Modern typescript client for janus-gateway.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smyrgeorge/janus-gateway-tsdx.git"
+  },
+  "keywords": [
+    "janus",
+    "janus-gateway",
+    "webrtc",
+    "video",
+    "audio"
+  ],
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
@@ -30,8 +44,6 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "janus-gateway-tsdx",
-  "author": "George Smyrnaios",
   "module": "dist/janus-gateway-ts.esm.js",
   "size-limit": [
     {
