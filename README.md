@@ -9,12 +9,15 @@ This library is a rewrite of [janus-gateway-js](https://github.com/sjkummer/janu
 Also, this library is possible to be used with **react-native**.
 In this case we need to create some shim classes and pass them to Client constructor, see [Client](src/client/client.ts). 
 
-## TODO
-- [ ] Remove bluebird Promise library
-- [ ] Make use of async/await
-- [ ] Write some tests
-- [ ] Write some proper documentation
-- [x] Documentation for React Native
+## Next steps
+- [ ] Remove `bluebird` Promise library.
+- [ ] Remove `websocket` dependency.
+- [ ] Remove `webrtcsupport` dependency.
+- [ ] Make use of async/await.
+- [ ] Write some tests.
+- [ ] Write some documentation.
+- [x] React Native support.
+- [x] React Native Documentation.
 
 ## Example of usage
 See the [VideoRoom](src/wrapper/video-room/video-room.ts) and [VideoRoomBuilder](src/wrapper/video-room/video-room-builder.ts)
@@ -39,7 +42,7 @@ Just run `yarn build`
 
 ## Plugins
 
-Currently, the project has four implemented plugins: audio-bridge, video-streaming, rtp-broadcast and audio-room and video-room.
+Currently, the project has five implemented plugins: `audio-bridge`, `video-streaming`, `rtp-broadcast`, `audio-room` and `video-room`.
 If you require a plugin that is not implemented then you need to write it on your own.
 
 * [MediaPlugin](src/plugin/base/media-plugin.ts)
