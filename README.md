@@ -75,8 +75,8 @@ import {RTCIceCandidate, RTCPeerConnection, RTCSessionDescription} from 'react-n
 import {WebRTC} from "janus-gateway-tsdx/dist/plugin/base/shims/definitions";
 
 class WebRTCReactNativeShim implements WebRTC {
-  newRTCPeerConnection = (config, constraints): RTCPeerConnection => {
-    return new RTCPeerConnection(config, constraints);
+  newRTCPeerConnection = (config, _): RTCPeerConnection => {
+    return new RTCPeerConnection(config);
   };
 
   newRTCSessionDescription = (jsep: RTCSessionDescription): RTCSessionDescription => {
