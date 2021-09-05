@@ -19,7 +19,19 @@ export interface RemoteVideo {
   stream: any;
 }
 
+/**
+ * TODO: Change to correct Type.
+ * {
+ *       "request" : "join",
+ *       "ptype" : "publisher",
+ *       "room" : <unique ID of the room to join>,
+ *       "id" : <unique ID to register for the publisher; optional, will be chosen by the plugin if missing>,
+ *       "display" : "<display name for the publisher; optional>",
+ *       "token" : "<invitation token, in case the room has an ACL; optional>"
+ * }
+ */
 export interface JoinOptions {
+  id?: number;
   room?: number;
   ptype?: string;
   display?: string;

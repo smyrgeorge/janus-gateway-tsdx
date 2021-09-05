@@ -38,8 +38,13 @@ class VideoRoomBuilder {
     return this;
   }
 
-  async join(room: number, display: string): Promise<VideoRoom> {
-    let options: JoinOptions = { room, display };
+  /**
+   * @param room Room id
+   * @param display User display name
+   * @param id User pre-defined id (optional)
+   */
+  async join(room: number, display: string, id: number | undefined = undefined): Promise<VideoRoom> {
+    let options: JoinOptions = { room, display, id };
     await this.room.join(options, this.mediaConstraints).catch(e => console.error(e.message));
     return this.room;
   }
