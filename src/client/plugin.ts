@@ -19,7 +19,7 @@ class Plugin extends TTransactionGateway {
     this.name = name;
     this.id = id;
 
-    session.on('destroy', () => this._detach());
+    session.on('destroy', () => this.onDetached());
   }
 
   static create(session: Session, name: string, id: string, mediaDevices: MediaDevices, webRTC: WebRTC): Plugin {
@@ -67,8 +67,16 @@ class Plugin extends TTransactionGateway {
     return Promise.resolve();
   }
 
+  onDetached(): Promise<any> {
+    if (this.session) {
+      this.session = null;
+      this.emit('detach');
+    }
+    return Promise.resolve();
+  }
+
   cleanup(): Promise<any> {
-    return this._detach();
+    return this.onDetached();
   }
 
   processOutcomeMessage(msg: any): Promise<any> {
@@ -79,24 +87,12 @@ class Plugin extends TTransactionGateway {
     return Promise.try(() => {
       msg = new JanusPluginMessage(msg.getPlainMessage(), this);
       if ('detached' === msg.get('janus')) {
-        return this._onDetached();
+        return this.onDetached();
       }
       return this.defaultProcessIncomeMessage(msg);
     })
       .then(() => this.emit('message', msg))
       .catch(error => this.emit('error', error));
-  }
-
-  _detach(): Promise<any> {
-    if (this.session) {
-      this.session = null;
-      this.emit('detach');
-    }
-    return Promise.resolve();
-  }
-
-  toString() {
-    return `[Plugin] ${JSON.stringify({ id: this.id, name: this.name })}`;
   }
 
   sendWithTransaction(options: any): Promise<any> {
@@ -120,8 +116,8 @@ class Plugin extends TTransactionGateway {
     });
   }
 
-  private _onDetached(): Promise<any> {
-    return this._detach();
+  toString() {
+    return `[Plugin] ${JSON.stringify({ id: this.id, name: this.name })}`;
   }
 }
 
