@@ -5,7 +5,7 @@ import MediaEntityPlugin from './media-entity-plugin';
 class MediaAudioPlugin extends MediaEntityPlugin {
   _join(id: string | number, options: any): Promise<JanusPluginMessage> {
     let body = Object.assign({ request: 'join' }, options);
-    return this.sendWithTransaction({ body: body }).then(response => {
+    return this.sendWithTransaction({ body }).then(response => {
       this.setCurrentEntity(id);
       return response;
     });
@@ -20,7 +20,7 @@ class MediaAudioPlugin extends MediaEntityPlugin {
 
   _change(id: string | number, options: any): Promise<JanusPluginMessage> {
     let body = Object.assign({ request: 'changeroom' }, options);
-    return this.sendWithTransaction({ body: body }).then(response => {
+    return this.sendWithTransaction({ body }).then(response => {
       this.setCurrentEntity(id);
       return response;
     });
@@ -44,7 +44,7 @@ class MediaAudioPlugin extends MediaEntityPlugin {
 
   configure(options: any, jsep: RTCSessionDescription): Promise<JanusPluginMessage> {
     let body = Object.assign({ request: 'configure' }, options);
-    let message: any = { body: body };
+    let message: any = { body };
     if (jsep) {
       message.jsep = jsep;
     }
@@ -60,8 +60,8 @@ class MediaAudioPlugin extends MediaEntityPlugin {
       .then(jsep => this.sendSDP(jsep, configureOptions));
   }
 
-  sendSDP(jsep: RTCSessionDescription, configureOptions: any): Promise<RTCSessionDescription> {
-    return this.configure(configureOptions, jsep).then(response => {
+  sendSDP(jsep: RTCSessionDescription, options: any): Promise<RTCSessionDescription> {
+    return this.configure(options, jsep).then(response => {
       let jsep = response.get('jsep');
       if (jsep) {
         this.setRemoteSDP(jsep);
@@ -73,7 +73,7 @@ class MediaAudioPlugin extends MediaEntityPlugin {
 
   _listParticipants(options: any): Promise<JanusPluginMessage> {
     let body = Object.assign({ request: 'listparticipants' }, options);
-    return this.sendWithTransaction({ body: body });
+    return this.sendWithTransaction({ body });
   }
 }
 

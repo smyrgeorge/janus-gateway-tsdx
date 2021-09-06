@@ -20,7 +20,7 @@ class MediaEntityPlugin extends MediaPlugin {
 
   _create(options: any): Promise<JanusPluginMessage> {
     let body = Object.assign({ request: 'create' }, options);
-    return this.sendWithTransaction({ body: body }).catch(error => {
+    return this.sendWithTransaction({ body }).catch(error => {
       if (error.message.indexOf('already exists') > 0) {
         return error.response;
       } else {
@@ -31,7 +31,7 @@ class MediaEntityPlugin extends MediaPlugin {
 
   _destroy(id: string | number, options: any): Promise<JanusPluginMessage> {
     let body = Object.assign({ request: 'destroy' }, options);
-    return this.sendWithTransaction({ body: body }).then(response => {
+    return this.sendWithTransaction({ body }).then(response => {
       if (this.hasCurrentEntity(id)) {
         this.resetCurrentEntity();
       }
@@ -41,7 +41,7 @@ class MediaEntityPlugin extends MediaPlugin {
 
   _list(options: any = {}): Promise<JanusPluginMessage> {
     let body = Object.assign({ request: 'list' }, options ?? {});
-    return this.sendWithTransaction({ body: body });
+    return this.sendWithTransaction({ body });
   }
 
   _onHangup(msg) {

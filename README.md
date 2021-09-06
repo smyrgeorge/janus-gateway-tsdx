@@ -42,14 +42,11 @@ Just run `yarn build`
 
 ## Plugins
 
-Currently, the project has five implemented plugins: `audio-bridge`, `video-streaming`, `rtp-broadcast`, `audio-room` and `video-room`.
+Currently, the project has implemented: `audio-bridge`, `video-streaming`, and `video-room`.
 If you require a plugin that is not implemented then you need to write it on your own.
 
-* [MediaPlugin](src/plugin/base/media-plugin.ts)
 * [AudioBridgePlugin](src/plugin/audio-bridge-plugin.ts)
-* [AudioBoomPlugin](src/plugin/audio-room-plugin.ts)
 * [StreamingPlugin](src/plugin/streaming-plugin.ts)
-* [RtpBroadcastPlugin](src/plugin/rtp-broadcast-plugin.ts)
 * [VideoRoomPlugin](src/plugin/video-room-plugin.ts)
 
 
@@ -57,7 +54,7 @@ If you require a plugin that is not implemented then you need to write it on you
 
 Media devices shim:
 ```typescript
-import {MediaDevices} from "janus-gateway-tsdx/src/plugin/base/shims/definitions";
+import {MediaDevices} from 'janus-gateway-tsdx';
 import {mediaDevices} from 'react-native-webrtc';
 
 class MediaDevicesReactNativeShim implements MediaDevices {
@@ -72,7 +69,7 @@ export default MediaDevicesReactNativeShim
 WebRTC shim:
 ```typescript
 import {RTCIceCandidate, RTCPeerConnection, RTCSessionDescription} from 'react-native-webrtc';
-import {WebRTC} from "janus-gateway-tsdx/dist/plugin/base/shims/definitions";
+import {WebRTC} from 'janus-gateway-tsdx';
 
 class WebRTCReactNativeShim implements WebRTC {
   newRTCPeerConnection = (config, _): RTCPeerConnection => {
@@ -118,7 +115,7 @@ class EchoTest extends MediaPlugin {
       })
       .then(() => this.createOffer({}))
       .then(jsep => {
-        let message = { body: { audio: state }, jsep: jsep };
+        let message = { body: { audio: state }, jsep };
         return this.sendWithTransaction(message);
       })
       .then(response => {

@@ -64,7 +64,7 @@ class MediaPlugin extends Plugin {
     } else {
       this.pc.addTrack(track, stream);
       this.emit('pc:track:local', {
-        track: track,
+        track,
         streams: Array.prototype.slice.call(arguments, 1),
       });
     }
@@ -75,11 +75,11 @@ class MediaPlugin extends Plugin {
     let promise = this.mediaDevices.getUserMedia(constraints);
     return promise
       .then(stream => {
-        this.emit('consent-dialog:stop', { stream: stream });
+        this.emit('consent-dialog:stop', { stream });
         return stream;
       })
       .catch(error => {
-        this.emit('consent-dialog:stop', { error: error });
+        this.emit('consent-dialog:stop', { error });
         throw error;
       });
   }

@@ -3,6 +3,10 @@ import Plugin from '../client/plugin';
 import MediaStreamPlugin from './base/media-stream-plugin';
 import JanusPluginMessage from '../client/misc/plugin-message';
 
+/**
+ * Original documentation of the plugin here:
+ * https://janus.conf.meetecho.com/docs/streaming.html
+ */
 class StreamingPlugin extends MediaStreamPlugin {
   static NAME = 'janus.plugin.streaming';
 
@@ -34,27 +38,27 @@ class StreamingPlugin extends MediaStreamPlugin {
     return this._pause();
   }
 
-  switch(mountPointId: number, options: any): Promise<JanusPluginMessage> {
-    return this._switch(mountPointId, options);
+  switch(id: number, options: any): Promise<JanusPluginMessage> {
+    return this._switch(id, options);
   }
 
-  enable(mountPointId: number, options: any): Promise<JanusPluginMessage> {
-    let body = Object.assign({ request: 'enable', id: mountPointId }, options);
-    return this.sendWithTransaction({ body: body });
+  enable(id: number, options: any): Promise<JanusPluginMessage> {
+    let body = Object.assign({ request: 'enable', id }, options);
+    return this.sendWithTransaction({ body });
   }
 
-  disable(mountPointId: number, options: any): Promise<any> {
-    let body = Object.assign({ request: 'disable', id: mountPointId }, options);
-    return this.sendWithTransaction({ body: body }).then(() => {
-      if (this.hasCurrentEntity(mountPointId)) {
+  disable(id: number, options: any): Promise<any> {
+    let body = Object.assign({ request: 'disable', id }, options);
+    return this.sendWithTransaction({ body }).then(() => {
+      if (this.hasCurrentEntity(id)) {
         this.resetCurrentEntity();
       }
     });
   }
 
-  recording(mountPointId: number, options: any): Promise<JanusPluginMessage> {
-    let body = Object.assign({ request: 'recording', id: mountPointId }, options);
-    return this.sendWithTransaction({ body: body });
+  recording(id: number, options: any): Promise<JanusPluginMessage> {
+    let body = Object.assign({ request: 'recording', id }, options);
+    return this.sendWithTransaction({ body });
   }
 
   getResponseAlias() {

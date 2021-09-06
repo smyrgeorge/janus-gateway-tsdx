@@ -4,10 +4,12 @@ import JanusMessage from '../client/misc/message';
 import JanusPluginMessage from '../client/misc/plugin-message';
 import { JoinInfo, JoinOptions, Publisher, PublisherJoinResult, RemoteVideo } from './dto/video-room';
 
-// Janus video room documentation here:
-// https://janus.conf.meetecho.com/docs/videoroom.html
 const JANUS_VIDEOROOM_OPTIONS = { audio: true, video: true };
 
+/**
+ * Original documentation of the plugin here:
+ * https://janus.conf.meetecho.com/docs/videoroom.html
+ */
 class VideoRoomPlugin extends MediaPlugin {
   static NAME = 'janus.plugin.videoroom';
   private joinInfo: JoinInfo | null = null;
@@ -41,8 +43,8 @@ class VideoRoomPlugin extends MediaPlugin {
   }
 
   join(options: JoinOptions) {
-    let opts = Object.assign({ request: 'join' }, options);
-    return this.sendWithTransaction({ janus: 'message', body: opts });
+    let body = Object.assign({ request: 'join' }, options);
+    return this.sendWithTransaction({ janus: 'message', body });
   }
 
   start(room, jsep) {

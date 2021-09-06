@@ -5,18 +5,18 @@ import MediaEntityPlugin from './media-entity-plugin';
 class MediaStreamPlugin extends MediaEntityPlugin {
   // @ts-ignore
   _create(id: string | number, options: any): Promise<JanusPluginMessage> {
-    options = Object.assign({ id: id }, options);
+    options = Object.assign({ id }, options);
     return super._create(options);
   }
 
   _destroy(id: string | number, options: any = {}): Promise<JanusPluginMessage> {
-    options = Object.assign({ id: id }, options);
+    options = Object.assign({ id }, options);
     return super._destroy(id, options);
   }
 
   _watch(id: string | number, watchOptions: any, answerOptions: any): Promise<JanusPluginMessage> {
-    let body = Object.assign({ request: 'watch', id: id }, watchOptions);
-    return this.sendWithTransaction({ body: body }).then(response => {
+    let body = Object.assign({ request: 'watch', id }, watchOptions);
+    return this.sendWithTransaction({ body }).then(response => {
       let jsep = response.get('jsep');
       if (!jsep || 'offer' !== jsep['type']) {
         throw new Error('Expect offer response on watch request');
@@ -46,8 +46,8 @@ class MediaStreamPlugin extends MediaEntityPlugin {
   }
 
   _switch(id: string | number, options: any = {}): Promise<JanusPluginMessage> {
-    let body = Object.assign({ request: 'switch', id: id }, options);
-    return this.sendWithTransaction({ body: body }).then(response => {
+    let body = Object.assign({ request: 'switch', id }, options);
+    return this.sendWithTransaction({ body }).then(response => {
       this.setCurrentEntity(id);
       return response;
     });
@@ -70,7 +70,7 @@ class MediaStreamPlugin extends MediaEntityPlugin {
         this.sendWithTransaction({
           janus: 'message',
           body: { request: 'start' },
-          jsep: jsep,
+          jsep,
         })
       );
   }
