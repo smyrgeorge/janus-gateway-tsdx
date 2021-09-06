@@ -12,9 +12,7 @@ import MediaEntityPlugin from './plugin/base/media-entity-plugin';
 import MediaAudioPlugin from './plugin/base/media-audio-plugin';
 
 // Janus plugins.
-import RtpBroadcastPlugin from './plugin/rtp-broadcast-plugin';
 import StreamingPlugin from './plugin/streaming-plugin';
-import AudioRoomPlugin from './plugin/audio-room-plugin';
 import AudioBridgePlugin from './plugin/audio-bridge-plugin';
 
 // Video room plugin.
@@ -42,9 +40,7 @@ export {
   MediaEntityPlugin,
   MediaAudioPlugin,
   AudioBridgePlugin,
-  AudioRoomPlugin,
   StreamingPlugin,
-  RtpBroadcastPlugin,
   VideoRoomPlugin,
   VideoRoom,
   VideoRoomBuilder,
