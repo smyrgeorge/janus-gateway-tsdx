@@ -11,8 +11,8 @@ In this case we need to create some shim classes and pass them to Client constru
 
 ## Next steps
 - [ ] Remove `bluebird` Promise library.
-- [ ] Remove `websocket` dependency.
-- [ ] Remove `webrtcsupport` dependency.
+- [x] Remove `websocket` dependency.
+- [x] Remove `webrtcsupport` dependency.
 - [ ] Make use of async/await.
 - [ ] Write some tests.
 - [ ] Write some documentation.

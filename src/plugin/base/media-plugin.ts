@@ -17,26 +17,9 @@ class MediaPlugin extends Plugin {
     this.webRTC = webRTC;
   }
 
-  createPeerConnection(options: RTCConfiguration = {}): RTCPeerConnection {
-    let opts = Object.assign(
-      options,
-      this.getSession()
-        ?.getConnection()
-        ?.getOptions().pc ?? {}
-    );
-
-    let config = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
-    let constraints = { optional: [{ DtlsSrtpKeyAgreement: true }] };
-
-    if (opts.config) {
-      opts = Object.assign(config, opts.config);
-    }
-
-    if (opts.constraints) {
-      constraints = Object.assign(constraints, opts.constraints ?? {});
-    }
-
-    this.pc = this.webRTC.newRTCPeerConnection(config, constraints);
+  createPeerConnection(config: RTCConfiguration = {}): RTCPeerConnection {
+    config = Object.assign({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] }, config);
+    this.pc = this.webRTC.newRTCPeerConnection(config);
     this.addPcEventListeners();
     return this.pc;
   }
@@ -53,21 +36,8 @@ class MediaPlugin extends Plugin {
   }
 
   addTrack(track: MediaStreamTrack, stream: MediaStream) {
-    if (!this.pc?.addTrack) {
-      if (!stream) {
-        throw new Error('MediaPlugin.addTrack. Missing stream argument when pc.addTrack is not supported.');
-      }
-
-      // @ts-ignore
-      this.pc?.addStream(stream);
-      this.emit('pc:track:local', { streams: [stream] });
-    } else {
-      this.pc.addTrack(track, stream);
-      this.emit('pc:track:local', {
-        track,
-        streams: Array.prototype.slice.call(arguments, 1),
-      });
-    }
+    this.pc?.addTrack(track, stream);
+    this.emit('pc:track:local', { track, streams: [stream] });
   }
 
   getUserMedia(constraints: MediaStreamConstraints): Promise<any> {

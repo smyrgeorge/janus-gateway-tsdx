@@ -5,7 +5,7 @@ export interface MediaDevices {
 }
 
 export interface WebRTC {
-  newRTCPeerConnection: (config, constraints) => RTCPeerConnection;
+  newRTCPeerConnection: (config: RTCConfiguration) => RTCPeerConnection;
   newRTCSessionDescription: (jsep: RTCSessionDescription) => RTCSessionDescription;
   newRTCIceCandidate: (candidate: RTCIceCandidate) => RTCIceCandidate;
 }

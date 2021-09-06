@@ -1,5 +1,4 @@
 import Promise from 'bluebird';
-import { w3cwebsocket as WebSocket } from 'websocket';
 import EventEmitter from './misc/event-emitter';
 
 class Websocket extends EventEmitter {
@@ -15,7 +14,7 @@ class Websocket extends EventEmitter {
       this.ws.onopen = () => {
         this.ws.onerror = () => {};
         this.ws.onclose = () => {};
-        this._onOpen(this.ws);
+        this.onOpen(this.ws);
         resolve(this);
       };
     });
@@ -41,7 +40,7 @@ class Websocket extends EventEmitter {
     if (this.isOpened()) {
       return this._send(message);
     } else if (!this.ws || this.ws.CONNECTING === this.ws.readyState) {
-      return this._queue(message);
+      return this.queue(message);
     } else {
       return Promise.reject(new Error('Can not send message over closed connection'));
     }
@@ -55,7 +54,7 @@ class Websocket extends EventEmitter {
     }
   }
 
-  private _queue(message: any): Promise<any> {
+  private queue(message: any): Promise<any> {
     return new Promise(resolve => {
       this.once('open', () => this._send(message).then(() => resolve()));
     });
@@ -85,7 +84,7 @@ class Websocket extends EventEmitter {
     this.ws.onclose = () => this._close();
   }
 
-  private _onOpen(webSocket: WebSocket) {
+  private onOpen(webSocket: WebSocket) {
     if (typeof webSocket.readyState !== 'undefined') {
       this.initListeners();
     } else {

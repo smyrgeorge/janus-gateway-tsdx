@@ -1,17 +1,16 @@
-import webrtc from 'webrtcsupport';
 import { WebRTC } from './definitions';
 
 class WebRTCShim implements WebRTC {
-  newRTCPeerConnection = (config, constraints): RTCPeerConnection => {
-    return new webrtc.PeerConnection(config, constraints);
+  newRTCPeerConnection = (config: RTCConfiguration): RTCPeerConnection => {
+    return new window.RTCPeerConnection(config);
   };
 
   newRTCSessionDescription = (jsep: RTCSessionDescription): RTCSessionDescription => {
-    return new webrtc.SessionDescription(jsep);
+    return new window.RTCSessionDescription(jsep);
   };
 
   newRTCIceCandidate = (candidate: RTCIceCandidate): RTCIceCandidate => {
-    return new webrtc.IceCandidate(candidate);
+    return new window.RTCIceCandidate(candidate);
   };
 }
 

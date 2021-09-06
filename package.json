@@ -67,8 +67,6 @@
   },
   "dependencies": {
     "bluebird": "^3.7.2",
-    "eventemitter2": "^6.4.4",
-    "webrtcsupport": "^2.2.0",
-    "websocket": "^1.0.34"
+    "eventemitter2": "^6.4.4"
   }
 }
