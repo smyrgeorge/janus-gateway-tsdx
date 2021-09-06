@@ -33,10 +33,6 @@ export class VideoRoom {
     this._onRoomJoined = f;
   }
 
-  public onRemoteRoomAttached(f: (e: JoinInfo) => void) {
-    this._onRemoteRoomAttached = f;
-  }
-
   public onLocalVideo(f: (e: MediaStream) => void) {
     this._onLocalVideo = f;
   }
@@ -73,9 +69,6 @@ export class VideoRoom {
   };
 
   private _onRoomJoined = (_: JoinInfo) => {};
-
-  // @ts-ignore
-  private _onRemoteRoomAttached = (_: JoinInfo) => {};
 
   private _onLocalVideo = (_: MediaStream) => {};
 

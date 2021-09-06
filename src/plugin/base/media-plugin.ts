@@ -37,7 +37,7 @@ class MediaPlugin extends Plugin {
     }
 
     this.pc = this.webRTC.newRTCPeerConnection(config, constraints);
-    this._addPcEventListeners();
+    this.addPcEventListeners();
     return this.pc;
   }
 
@@ -85,24 +85,24 @@ class MediaPlugin extends Plugin {
   }
 
   createOffer(options: RTCOfferOptions): Promise<any> {
-    return this._createSDP('createOffer', options);
+    return this.createSDP('createOffer', options);
   }
 
   createAnswer(jsep: RTCSessionDescription, options: RTCAnswerOptions): Promise<any> {
-    return Promise.try(() => this.setRemoteSDP(jsep)).then(() => this._createSDP('createAnswer', options));
+    return Promise.try(() => this.setRemoteSDP(jsep)).then(() => this.createSDP('createAnswer', options));
   }
 
   setRemoteSDP(jsep: RTCSessionDescription): Promise<any> {
     return Promise.resolve(this.pc?.setRemoteDescription(this.webRTC.newRTCSessionDescription(jsep)));
   }
 
-  _createSDP(party: string, options: RTCAnswerOptions | RTCOfferOptions): Promise<any> {
+  private createSDP(party: string, options: RTCAnswerOptions | RTCOfferOptions): Promise<any> {
     if (!this.pc) {
       throw new Error('Create PeerConnection before creating SDP for it.');
     }
 
     if (['createOffer', 'createAnswer'].indexOf(party) < 0) {
-      throw new Error('Unknown party in _createSDP.');
+      throw new Error('Unknown party in createSDP.');
     }
 
     options = options ?? {};
@@ -115,10 +115,9 @@ class MediaPlugin extends Plugin {
   processIncomeMessage(message: JanusMessage) {
     return Promise.try(() => super.processIncomeMessage(message)).then(result => {
       let janusType = message['janus'];
-      // eslint-disable-next-line default-case
       switch (janusType) {
         case 'trickle':
-          this._onTrickle(message);
+          this.onTrickle(message);
           break;
         case 'hangup':
           this._onHangup(message);
@@ -130,8 +129,8 @@ class MediaPlugin extends Plugin {
 
   closePeerConnection() {
     if (this.pc) {
-      this._stopLocalMedia();
-      Object.keys(this.pcListeners).forEach(event => this._removePcEventListener(event));
+      this.stopLocalMedia();
+      Object.keys(this.pcListeners).forEach(event => this.removePcEventListener(event));
       this.pc.close();
       this.pc = null;
       this.emit('pc:close');
@@ -147,12 +146,12 @@ class MediaPlugin extends Plugin {
     this.emit('hangup', msg);
   }
 
-  private _onTrickle(msg: any) {
+  private onTrickle(msg: any) {
     let candidate = this.webRTC.newRTCIceCandidate(msg['candidate']);
     this.pc?.addIceCandidate(candidate).catch(error => this.emit('pc:error', error));
   }
 
-  private _stopLocalMedia() {
+  private stopLocalMedia() {
     // @ts-ignore
     this.pc?.getLocalStreams().forEach(stream => {
       if (stream.stop) {
@@ -163,32 +162,31 @@ class MediaPlugin extends Plugin {
     });
   }
 
-  private _addPcEventListeners() {
-    this._addPcEventListener('addstream', event => {
+  private addPcEventListeners() {
+    this.addPcEventListener('addstream', event => {
       this.emit('pc:track:remote', { streams: [event.stream] });
     });
 
-    this._addPcEventListener('track', event => {
+    this.addPcEventListener('track', event => {
       this.emit('pc:track:remote', event);
     });
 
-    this._addPcEventListener('icecandidate', event => {
+    this.addPcEventListener('icecandidate', event => {
       if (event.candidate) {
         this.send({ janus: 'trickle', candidate: event.candidate });
       } else {
         this.send({ janus: 'trickle', candidate: { completed: true } });
-        this._removePcEventListener('icecandidate');
+        this.removePcEventListener('icecandidate');
       }
     });
 
-    this._addPcEventListener('signalingstatechange', () => {
+    this.addPcEventListener('signalingstatechange', () => {
       if ('closed' === this.pc?.signalingState) {
         this.closePeerConnection();
       }
     });
 
-    this._addPcEventListener('iceconnectionstatechange', () => {
-      // eslint-disable-next-line default-case
+    this.addPcEventListener('iceconnectionstatechange', () => {
       switch (this.pc?.iceConnectionState) {
         case 'closed':
         case 'failed':
@@ -198,12 +196,12 @@ class MediaPlugin extends Plugin {
     });
   }
 
-  private _addPcEventListener(event, listener) {
+  private addPcEventListener(event, listener) {
     this.pcListeners[event] = listener;
     this.pc?.addEventListener(event, listener);
   }
 
-  private _removePcEventListener(event) {
+  private removePcEventListener(event) {
     this.pc?.removeEventListener(event, this.pcListeners[event]);
     delete this.pcListeners[event];
   }

@@ -34,26 +34,26 @@ class StreamingPlugin extends MediaStreamPlugin {
     return this._pause();
   }
 
-  switch(mountpointId: number, options: any): Promise<JanusPluginMessage> {
-    return this._switch(mountpointId, options);
+  switch(mountPointId: number, options: any): Promise<JanusPluginMessage> {
+    return this._switch(mountPointId, options);
   }
 
-  enable(mountpointId: number, options: any): Promise<JanusPluginMessage> {
-    let body = Object.assign({ request: 'enable', id: mountpointId }, options);
+  enable(mountPointId: number, options: any): Promise<JanusPluginMessage> {
+    let body = Object.assign({ request: 'enable', id: mountPointId }, options);
     return this.sendWithTransaction({ body: body });
   }
 
-  disable(mountpointId: number, options: any): Promise<any> {
-    let body = Object.assign({ request: 'disable', id: mountpointId }, options);
+  disable(mountPointId: number, options: any): Promise<any> {
+    let body = Object.assign({ request: 'disable', id: mountPointId }, options);
     return this.sendWithTransaction({ body: body }).then(() => {
-      if (this.hasCurrentEntity(mountpointId)) {
+      if (this.hasCurrentEntity(mountPointId)) {
         this.resetCurrentEntity();
       }
     });
   }
 
-  recording(mountpointId: number, options: any): Promise<JanusPluginMessage> {
-    let body = Object.assign({ request: 'recording', id: mountpointId }, options);
+  recording(mountPointId: number, options: any): Promise<JanusPluginMessage> {
+    let body = Object.assign({ request: 'recording', id: mountPointId }, options);
     return this.sendWithTransaction({ body: body });
   }
 

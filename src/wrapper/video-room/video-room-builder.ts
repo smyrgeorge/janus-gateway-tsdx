@@ -15,7 +15,6 @@ class VideoRoomBuilder {
     this.mediaConstraints = mediaConstraints;
     this.room = new VideoRoom(server, { keepalive: true }, mediaDevices, webRTC);
     this.room.onRoomJoined((info: JoinInfo) => console.info('Room joined:', info));
-    this.room.onRemoteRoomAttached((info: JoinInfo) => console.info('Remote room attached:', info));
   }
 
   onLocalVideo(f: (stream: MediaStream) => void): VideoRoomBuilder {

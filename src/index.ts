@@ -22,10 +22,13 @@ import VideoRoomPlugin from './plugin/video-room-plugin';
 import VideoRoom from './wrapper/video-room/video-room';
 import VideoRoomBuilder from './wrapper/video-room/video-room-builder';
 
+// Types
+import { RemoteVideo } from './plugin/dto/video-room';
+
 // Other
+import { MediaDevices, WebRTC } from './plugin/base/shims/definitions';
 import MediaDevicesShim from './plugin/base/shims/media-devices-shim';
 import WebRTCShim from './plugin/base/shims/webrtc-shim';
-import { RemoteVideo } from './plugin/dto/video-room';
 
 export {
   JanusError,
@@ -45,7 +48,9 @@ export {
   VideoRoomPlugin,
   VideoRoom,
   VideoRoomBuilder,
+  RemoteVideo,
+  MediaDevices,
+  WebRTC,
   MediaDevicesShim,
   WebRTCShim,
-  RemoteVideo,
 };

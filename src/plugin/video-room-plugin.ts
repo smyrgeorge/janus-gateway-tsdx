@@ -74,7 +74,6 @@ class VideoRoomPlugin extends MediaPlugin {
       const plainMessage = message.getPlainMessage();
       const type = plainMessage.janus;
 
-      // eslint-disable-next-line default-case
       switch (type) {
         case 'event':
           const pluginData = plainMessage?.plugindata?.data;
@@ -85,7 +84,6 @@ class VideoRoomPlugin extends MediaPlugin {
           let videoroom = pluginData.videoroom;
           this.handleRemotePublishers(pluginData.publishers).then(() => console.debug('Success handle publishers.'));
 
-          // eslint-disable-next-line default-case
           switch (videoroom) {
             case 'attached':
               this.onRemoteFeedAttached(plainMessage);
