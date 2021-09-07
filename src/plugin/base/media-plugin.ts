@@ -90,7 +90,7 @@ class MediaPlugin extends Plugin {
           this.onTrickle(message);
           break;
         case 'hangup':
-          this._onHangup(message);
+          this.onHangup(message);
           break;
       }
       return result;
@@ -112,7 +112,7 @@ class MediaPlugin extends Plugin {
     return super.onDetached();
   }
 
-  _onHangup(msg: any) {
+  onHangup(msg: any) {
     this.emit('hangup', msg);
   }
 
