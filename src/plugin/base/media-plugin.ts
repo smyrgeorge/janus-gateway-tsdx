@@ -121,17 +121,16 @@ class MediaPlugin extends Plugin {
     this.pc?.addIceCandidate(candidate).catch(error => this.emit('pc:error', error));
   }
 
-  // TODO: test this function.
   private stopLocalMedia() {
-    // this.pc?.getSenders().forEach((sender: RTCRtpSender) => sender.track?.stop())
+    this.pc?.getSenders().forEach((sender: RTCRtpSender) => sender.track?.stop());
     // @ts-ignore
-    this.pc?.getLocalStreams().forEach(stream => {
-      if (stream.stop) {
-        stream.stop();
-      } else if (stream.getTracks) {
-        stream.getTracks().forEach(track => track.stop());
-      }
-    });
+    // this.pc?.getLocalStreams().forEach(stream => {
+    //   if (stream.stop) {
+    //     stream.stop();
+    //   } else if (stream.getTracks) {
+    //     stream.getTracks().forEach(track => track.stop());
+    //   }
+    // });
   }
 
   private addPcEventListeners() {
