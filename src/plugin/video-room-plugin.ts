@@ -94,7 +94,7 @@ class VideoRoomPlugin extends MediaPlugin {
 
           switch (videoroom) {
             case 'attached':
-              this.onRemoteFeedAttached(plainMessage);
+              this.emit('videoroom-remote-feed:attached', { plainMessage });
               break;
             case 'event':
               if (pluginData.unpublished) {
@@ -110,14 +110,6 @@ class VideoRoomPlugin extends MediaPlugin {
     });
   }
 
-  onRemoteFeedReceived(feed: RemoteVideo) {
-    this.emit('videoroom-remote-feed:received', feed);
-  }
-
-  onRemoteFeedAttached(plainMessage) {
-    this.emit('videoroom-remote-feed:attached', { plainMessage });
-  }
-
   getResponseAlias() {
     return 'videoroom';
   }
@@ -126,7 +118,7 @@ class VideoRoomPlugin extends MediaPlugin {
     let plugin: VideoRoomPlugin = await this.getSession()?.attachPlugin(VideoRoomPlugin.NAME);
     plugin.on('pc:track:remote', (event: any) => {
       let feed: RemoteVideo = { feedInfo: publisher, stream: event.streams[0] };
-      this.onRemoteFeedReceived(feed);
+      this.emit('videoroom-remote-feed:received', feed);
     });
 
     let options: JoinOptions = {
