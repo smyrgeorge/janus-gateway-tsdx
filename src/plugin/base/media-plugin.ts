@@ -123,14 +123,6 @@ class MediaPlugin extends Plugin {
 
   private stopLocalMedia() {
     this.pc?.getSenders().forEach((sender: RTCRtpSender) => sender.track?.stop());
-    // @ts-ignore
-    // this.pc?.getLocalStreams().forEach(stream => {
-    //   if (stream.stop) {
-    //     stream.stop();
-    //   } else if (stream.getTracks) {
-    //     stream.getTracks().forEach(track => track.stop());
-    //   }
-    // });
   }
 
   private addPcEventListeners() {

@@ -1,5 +1,5 @@
 import Promise from 'bluebird';
-import TTransactionGateway from './tx/t-transaction-gateway';
+import TransactionManager from './tx/transaction-manager';
 import JanusError from './misc/error';
 import Timer from './misc/timer';
 import Transaction from './tx/transaction';
@@ -10,7 +10,7 @@ import { isNaturalNumber } from './misc/utils';
 import { MediaDevices } from '../plugin/base/shims/definitions';
 import { WebRTC } from '../plugin/base/shims/definitions';
 
-class Session extends TTransactionGateway {
+class Session extends TransactionManager {
   private connection: Connection | null;
   private readonly id: string;
   private plugins: {};
@@ -58,11 +58,11 @@ class Session extends TTransactionGateway {
   }
 
   attachPlugin(name: string): Promise<any> {
-    return this.sendSync({ janus: 'attach', plugin: name });
+    return this.sendSync({ janus: 'attach', plugin: name }, this);
   }
 
   destroy(): Promise<any> {
-    return this.sendSync({ janus: 'destroy' });
+    return this.sendSync({ janus: 'destroy' }, this);
   }
 
   cleanup(): Promise<any> {
@@ -93,11 +93,11 @@ class Session extends TTransactionGateway {
   processOutcomeMessage(message: any): Promise<any> {
     let janusMessage = message['janus'];
     if ('attach' === janusMessage) {
-      return this._onAttach(message);
+      return this.onAttach(message);
     }
 
     if ('destroy' === janusMessage) {
-      return this._onDestroy(message);
+      return this.onDestroy(message);
     }
 
     let pluginId = message['handle_id'];
@@ -123,7 +123,7 @@ class Session extends TTransactionGateway {
         throw new Error(`Invalid plugin [${pluginId}].`);
       }
       if ('timeout' === msg.get('janus')) {
-        return this._onTimeout(msg);
+        return this.onTimeout(msg);
       }
       return this.defaultProcessIncomeMessage(msg);
     })
@@ -174,11 +174,11 @@ class Session extends TTransactionGateway {
     });
   }
 
-  private _onTimeout(msg): Promise<any> {
+  private onTimeout(msg): Promise<any> {
     return this._destroy().return(msg);
   }
 
-  private _onDestroy(outMsg): Promise<any> {
+  private onDestroy(outMsg): Promise<any> {
     this.addTransaction(
       new Transaction(outMsg['transaction'], msg => {
         if ('success' === msg.get('janus')) {
@@ -191,7 +191,7 @@ class Session extends TTransactionGateway {
     return Promise.resolve(outMsg);
   }
 
-  private _onAttach(outMsg: any): Promise<any> {
+  private onAttach(outMsg: any): Promise<any> {
     this.addTransaction(
       new Transaction(outMsg['transaction'], msg => {
         if ('success' === msg.get('janus')) {

@@ -1,13 +1,13 @@
 import Promise from 'bluebird';
 import JanusError from './misc/error';
-import TTransactionGateway from './tx/t-transaction-gateway';
+import TransactionManager from './tx/transaction-manager';
 import Transaction from './tx/transaction';
 import JanusPluginMessage from './misc/plugin-message';
 import Session from './session';
 import JanusMessage from './misc/message';
 import { MediaDevices, WebRTC } from '../plugin/base/shims/definitions';
 
-class Plugin extends TTransactionGateway {
+class Plugin extends TransactionManager {
   private static types = {};
   private session: Session | null;
   private readonly name: string;
@@ -108,7 +108,7 @@ class Plugin extends TTransactionGateway {
 
     let message = Object.assign({ janus: 'message', transaction: transactionId }, options);
     this.addTransaction(transaction);
-    let sendPromise = this.sendSync(message);
+    let sendPromise = this.sendSync(message, this);
 
     return new Promise((resolve, reject) => {
       transaction.getPromise().catch(e => reject(e));

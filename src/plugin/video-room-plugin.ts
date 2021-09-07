@@ -9,6 +9,12 @@ const JANUS_VIDEOROOM_OPTIONS = { audio: true, video: true };
 /**
  * Original documentation of the plugin here:
  * https://janus.conf.meetecho.com/docs/videoroom.html
+ *
+ * Events:
+ * videoroom-remote-feed:received
+ * videoroom-remote-feed:leaving
+ * videoroom-remote-feed:unpublished
+ * videoroom-remote-feed:leaving
  */
 class VideoRoomPlugin extends MediaPlugin {
   static NAME = 'janus.plugin.videoroom';
@@ -95,8 +101,6 @@ class VideoRoomPlugin extends MediaPlugin {
                 this.emit('videoroom-remote-feed:unpublished', pluginData.unpublished);
               } else if (pluginData.leaving) {
                 this.emit('videoroom-remote-feed:leaving', pluginData.leaving);
-              } else {
-                this.onEvent(plainMessage);
               }
               break;
           }
@@ -112,10 +116,6 @@ class VideoRoomPlugin extends MediaPlugin {
 
   onRemoteFeedAttached(plainMessage) {
     this.emit('videoroom-remote-feed:attached', { plainMessage });
-  }
-
-  onEvent(plainMessage) {
-    this.emit('videoroom-event:attached', { plainMessage });
   }
 
   getResponseAlias() {

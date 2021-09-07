@@ -1,5 +1,5 @@
 import Promise from 'bluebird';
-import TTransactionGateway from './tx/t-transaction-gateway';
+import TransactionManager from './tx/transaction-manager';
 import JanusError from './misc/error';
 import Transaction from './tx/transaction';
 import Websocket from './websocket';
@@ -19,7 +19,7 @@ export interface ConnectionOptions {
   pc?: RTCPeerConnectionOptions;
 }
 
-class Connection extends TTransactionGateway {
+class Connection extends TransactionManager {
   private readonly id: string;
   private readonly address: string;
   private readonly sessions: {};
@@ -73,7 +73,7 @@ class Connection extends TTransactionGateway {
   }
 
   createSession(): Promise<any> {
-    return this.sendSync({ janus: 'create' });
+    return this.sendSync({ janus: 'create' }, this);
   }
 
   hasSession(sessionId: string): boolean {
@@ -115,7 +115,7 @@ class Connection extends TTransactionGateway {
 
   processOutcomeMessage(message: any): Promise<any> {
     if ('create' === message['janus']) {
-      return this._onCreate(message);
+      return this.onCreate(message);
     }
 
     let sessionId = message['session_id'];
@@ -151,7 +151,7 @@ class Connection extends TTransactionGateway {
     return `[Connection] ${JSON.stringify({ id: this.id, address: this.address })}`;
   }
 
-  private _onCreate(outMsg: JanusMessage): Promise<JanusMessage> {
+  private onCreate(outMsg: JanusMessage): Promise<JanusMessage> {
     this.addTransaction(
       new Transaction(outMsg['transaction'], (msg: JanusMessage) => {
         if ('success' === msg.get('janus')) {

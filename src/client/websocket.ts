@@ -31,14 +31,14 @@ class Websocket extends EventEmitter {
   close(): Promise<any> {
     if (this.isClosed()) return Promise.resolve();
     return new Promise(resolve => {
-      this._close();
+      this.onClose();
       resolve();
     });
   }
 
   send(message: any): Promise<any> {
     if (this.isOpened()) {
-      return this._send(message);
+      return this.onSend(message);
     } else if (!this.ws || this.ws.CONNECTING === this.ws.readyState) {
       return this.queue(message);
     } else {
@@ -56,18 +56,18 @@ class Websocket extends EventEmitter {
 
   private queue(message: any): Promise<any> {
     return new Promise(resolve => {
-      this.once('open', () => this._send(message).then(() => resolve()));
+      this.once('open', () => this.onSend(message).then(() => resolve()));
     });
   }
 
-  private _send(message: any): Promise<any> {
+  private onSend(message: any): Promise<any> {
     return new Promise(resolve => {
       this.ws.send(JSON.stringify(message));
       resolve();
     });
   }
 
-  private _close() {
+  private onClose() {
     if (!this.isClosed()) {
       this.ws.close();
     }
@@ -81,7 +81,7 @@ class Websocket extends EventEmitter {
     };
 
     this.ws.onerror = error => this.emit('error', error);
-    this.ws.onclose = () => this._close();
+    this.ws.onclose = () => this.onClose();
   }
 
   private onOpen(webSocket: WebSocket) {
