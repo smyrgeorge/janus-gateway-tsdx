@@ -41,9 +41,15 @@ class VideoRoomBuilder {
    * @param room Room id
    * @param display User display name
    * @param id User pre-defined id (optional)
+   * @param pin Room pin (optional)
    */
-  async join(room: number, display: string, id: number | undefined = undefined): Promise<VideoRoom> {
-    let options: JoinOptions = { room, display, id };
+  async join(
+    room: number,
+    display: string,
+    id: number | undefined = undefined,
+    pin: string | undefined = undefined
+  ): Promise<VideoRoom> {
+    let options: JoinOptions = { room, display, id, pin };
     await this.room.join(options, this.mediaConstraints).catch(e => console.error(e.message));
     return this.room;
   }

@@ -36,7 +36,7 @@ export interface JoinOptions {
   ptype?: string;
   display?: string;
   feed?: number;
-  pin?: any;
+  pin?: string;
   private_id?: number;
 }
 
