@@ -1,5 +1,5 @@
 import VideoRoom from './video-room';
-import { JoinInfo, JoinOptions, RemoteVideo } from '../../plugin/dto/video-room';
+import { JanusId, JoinInfo, JoinOptions, RemoteVideo } from '../../plugin/dto/video-room'
 import { MediaDevices, WebRTC } from '../../plugin/base/shims/definitions';
 
 class VideoRoomBuilder {
@@ -44,9 +44,9 @@ class VideoRoomBuilder {
    * @param pin Room pin (optional)
    */
   async join(
-    room: number,
+    room: JanusId,
     display: string,
-    id: number | undefined = undefined,
+    id: JanusId | undefined = undefined,
     pin: string | undefined = undefined
   ): Promise<VideoRoom> {
     let options: JoinOptions = { room, display, id, pin };
