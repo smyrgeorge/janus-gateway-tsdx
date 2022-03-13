@@ -1,3 +1,4 @@
+import Promise from 'bluebird';
 import EventEmitter from './misc/event-emitter';
 
 class Websocket extends EventEmitter {
@@ -29,7 +30,7 @@ class Websocket extends EventEmitter {
 
   close(): Promise<any> {
     if (this.isClosed()) return Promise.resolve();
-    return Promise.resolve(resolve => {
+    return new Promise(resolve => {
       this.onClose();
       resolve();
     });
@@ -54,13 +55,13 @@ class Websocket extends EventEmitter {
   }
 
   private queue(message: any): Promise<any> {
-    return Promise.resolve(resolve => {
+    return new Promise(resolve => {
       this.once('open', () => this.onSend(message).then(() => resolve()));
     });
   }
 
   private onSend(message: any): Promise<any> {
-    return Promise.resolve(resolve => {
+    return new Promise(resolve => {
       this.ws.send(JSON.stringify(message));
       resolve();
     });

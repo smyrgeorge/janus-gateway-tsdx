@@ -30,7 +30,7 @@ export interface RemoteVideo {
  *       "token" : "<invitation token, in case the room has an ACL; optional>"
  * }
  */
-export type JanusId = number | string;
+export type JanusId = number | string
 export interface JoinOptions {
   id?: JanusId;
   room?: JanusId;

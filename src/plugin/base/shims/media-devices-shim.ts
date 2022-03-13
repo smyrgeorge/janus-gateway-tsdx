@@ -1,3 +1,4 @@
+import Promise from 'bluebird';
 import { MediaDevices } from './definitions';
 
 class MediaDevicesShim implements MediaDevices {

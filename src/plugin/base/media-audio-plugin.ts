@@ -1,3 +1,4 @@
+import Promise from 'bluebird';
 import JanusPluginMessage from '../../client/misc/plugin-message';
 import MediaEntityPlugin from './media-entity-plugin';
 
@@ -51,7 +52,7 @@ class MediaAudioPlugin extends MediaEntityPlugin {
   }
 
   offerStream(stream: MediaStream, offerOptions: RTCOfferOptions, configureOptions: any): Promise<any> {
-    return new Promise(() => {
+    return Promise.try(() => {
       this.createPeerConnection();
       stream.getAudioTracks().forEach(track => this.addTrack(track, stream));
     })

@@ -1,3 +1,4 @@
+import Promise from 'bluebird';
 import TransactionManager from './tx/transaction-manager';
 import JanusError from './misc/error';
 import Transaction from './tx/transaction';
@@ -55,12 +56,12 @@ class Connection extends TransactionManager {
   }
 
   open(): Promise<Connection> {
-    return this.websocketConnection.open(this.address, 'janus-protocol').then(() => this);
+    return this.websocketConnection.open(this.address, 'janus-protocol').return(this);
   }
 
   close(): Promise<any> {
     if (this.websocketConnection.isOpened()) {
-      return new Promise(() => this.getSessionList().map(session => session.cleanup()))
+      return Promise.map(this.getSessionList(), session => session.cleanup())
         .then(() => this.websocketConnection.close())
         .then(() => this.emit('close'));
     }
@@ -137,7 +138,7 @@ class Connection extends TransactionManager {
       return this.getSession(sessionId).processIncomeMessage(msg);
     }
 
-    return new Promise(() => {
+    return Promise.try(() => {
       if (sessionId && !this.hasSession(sessionId)) {
         throw new Error(`Invalid session: [${sessionId}]`);
       }

@@ -1,3 +1,4 @@
+import Promise from 'bluebird';
 import TransactionManager from './tx/transaction-manager';
 import JanusError from './misc/error';
 import Timer from './misc/timer';
@@ -6,7 +7,8 @@ import Plugin from './plugin';
 import Connection from './connection';
 import JanusMessage from './misc/message';
 import { isNaturalNumber } from './misc/utils';
-import { MediaDevices, WebRTC } from '../plugin/base/shims/definitions';
+import { MediaDevices } from '../plugin/base/shims/definitions';
+import { WebRTC } from '../plugin/base/shims/definitions';
 
 class Session extends TransactionManager {
   private connection: Connection | null;
@@ -116,7 +118,7 @@ class Session extends TransactionManager {
       return this.getPlugin(pluginId).processIncomeMessage(msg);
     }
 
-    return new Promise(() => {
+    return Promise.try(() => {
       if (pluginId && !this.hasPlugin(pluginId)) {
         throw new Error(`Invalid plugin [${pluginId}].`);
       }
@@ -165,7 +167,7 @@ class Session extends TransactionManager {
       return Promise.resolve();
     }
     this.stopKeepAlive();
-    return new Promise(() => this.getPluginList().map(plugin => plugin.cleanup())).finally(() => {
+    return Promise.map(this.getPluginList(), plugin => plugin.cleanup()).finally(() => {
       this.plugins = {};
       this.connection = null;
       this.emit('destroy');
@@ -173,14 +175,14 @@ class Session extends TransactionManager {
   }
 
   private onTimeout(msg): Promise<any> {
-    return this._destroy().then(msg);
+    return this._destroy().return(msg);
   }
 
   private onDestroy(outMsg): Promise<any> {
     this.addTransaction(
       new Transaction(outMsg['transaction'], msg => {
         if ('success' === msg.get('janus')) {
-          return this._destroy().then(msg);
+          return this._destroy().return(msg);
         } else {
           throw new JanusError(msg);
         }

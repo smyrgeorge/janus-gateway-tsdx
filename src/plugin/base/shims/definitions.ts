@@ -1,3 +1,5 @@
+import Promise from 'bluebird';
+
 export interface MediaDevices {
   getUserMedia: (constants: MediaStreamConstraints) => Promise<MediaStream>;
 }
