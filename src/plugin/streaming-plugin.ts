@@ -1,4 +1,3 @@
-import Promise from 'bluebird';
 import Plugin from '../client/plugin';
 import MediaStreamPlugin from './base/media-stream-plugin';
 import JanusPluginMessage from '../client/misc/plugin-message';

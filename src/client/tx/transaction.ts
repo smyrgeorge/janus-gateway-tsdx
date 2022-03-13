@@ -1,5 +1,3 @@
-import Promise from 'bluebird';
-
 class Transaction {
   readonly id: string;
   private readonly promise: Promise<any>;

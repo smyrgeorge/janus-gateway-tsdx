@@ -1,4 +1,3 @@
-import Promise from 'bluebird';
 import JanusPluginMessage from '../../client/misc/plugin-message';
 import MediaEntityPlugin from './media-entity-plugin';
 
@@ -22,7 +21,7 @@ class MediaStreamPlugin extends MediaEntityPlugin {
         throw new Error('Expect offer response on watch request');
       }
       this.setCurrentEntity(id);
-      return this._offerAnswer(jsep, answerOptions).return(response);
+      return this._offerAnswer(jsep, answerOptions).then(response);
     });
   }
 
@@ -64,7 +63,7 @@ class MediaStreamPlugin extends MediaEntityPlugin {
   }
 
   _offerAnswer(jsep: RTCSessionDescription, answerOptions: RTCAnswerOptions): Promise<JanusPluginMessage> {
-    return Promise.try(() => this.createPeerConnection())
+    return Promise.resolve(() => this.createPeerConnection())
       .then(() => this.createAnswer(jsep, answerOptions))
       .then(jsep =>
         this.sendWithTransaction({

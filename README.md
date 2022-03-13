@@ -4,13 +4,15 @@ janus-gateway-tsdx [![CI](https://github.com/smyrgeorge/janus-gateway-ts/actions
 ## About
 
 Modern typescript client for [janus gateway](https://janus.conf.meetecho.com/). Based on websockets.
-The original client can be found here https://janus.conf.meetecho.com/docs/rest.html.
+
 This library is a rewrite of [janus-gateway-js](https://github.com/sjkummer/janus-gateway-js) in typescript.
+The original client can be found here https://janus.conf.meetecho.com/docs/rest.html.
+
 Also, this library is possible to be used with **react-native**.
 In this case we need to create some shim classes and pass them to Client constructor, see [Client](src/client/client.ts). 
 
 ## Next steps
-- [ ] Remove `bluebird` Promise library.
+- [x] Remove `bluebird` Promise library.
 - [x] Remove `websocket` dependency.
 - [x] Remove `webrtcsupport` dependency.
 - [ ] Make use of async/await.
@@ -100,7 +102,6 @@ For simplicity lets write an [EchoTest plugin](https://janus.conf.meetecho.com/d
 only `audio`.
 
 ```typescript
-import Promise from 'bluebird';
 import Plugin from '../client/plugin';
 import MediaPlugin from './base/media-plugin';
 

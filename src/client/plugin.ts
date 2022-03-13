@@ -1,4 +1,3 @@
-import Promise from 'bluebird';
 import JanusError from './misc/error';
 import TransactionManager from './tx/transaction-manager';
 import Transaction from './tx/transaction';
@@ -84,7 +83,7 @@ class Plugin extends TransactionManager {
   }
 
   processIncomeMessage(msg: JanusMessage): Promise<any> {
-    return Promise.try(() => {
+    return new Promise(() => {
       msg = new JanusPluginMessage(msg.getPlainMessage(), this);
       if ('detached' === msg.get('janus')) {
         return this.onDetached();

@@ -1,4 +1,3 @@
-import Promise from 'bluebird';
 import Plugin from '../../client/plugin';
 import { MediaDevices, WebRTC } from './shims/definitions';
 import JanusMessage from '../../client/misc/message';
@@ -59,11 +58,11 @@ class MediaPlugin extends Plugin {
   }
 
   createAnswer(jsep: RTCSessionDescription, options: RTCAnswerOptions): Promise<any> {
-    return Promise.try(() => this.setRemoteSDP(jsep)).then(() => this.createSDP('createAnswer', options));
+    return this.setRemoteSDP(jsep).then(() => this.createSDP('createAnswer', options));
   }
 
-  setRemoteSDP(jsep: RTCSessionDescription): Promise<any> {
-    return Promise.resolve(this.pc?.setRemoteDescription(this.webRTC.newRTCSessionDescription(jsep)));
+  setRemoteSDP(jsep: RTCSessionDescription): Promise<void> {
+    return new Promise(() => this.pc?.setRemoteDescription(this.webRTC.newRTCSessionDescription(jsep)));
   }
 
   private createSDP(party: string, options: RTCAnswerOptions | RTCOfferOptions): Promise<any> {
@@ -83,7 +82,7 @@ class MediaPlugin extends Plugin {
   }
 
   processIncomeMessage(message: JanusMessage) {
-    return Promise.try(() => super.processIncomeMessage(message)).then(result => {
+    return new Promise(() => super.processIncomeMessage(message)).then(result => {
       let janusType = message['janus'];
       switch (janusType) {
         case 'trickle':

@@ -1,4 +1,3 @@
-import Promise from 'bluebird';
 import JanusError from '../misc/error';
 import Transaction from './transaction';
 import JanusMessage from '../misc/message';
