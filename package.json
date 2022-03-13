@@ -1,7 +1,7 @@
 {
   "name": "janus-gateway-tsdx",
   "author": "Giorgos Smyrnaios <smyrgeorge@gmail.com>",
-  "version": "0.2.8",
+  "version": "0.3.0",
   "license": "MIT",
   "description": "Modern typescript client for janus-gateway.",
   "repository": {
