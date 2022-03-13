@@ -1,5 +1,5 @@
 import VideoRoom from './video-room';
-import { JanusId, JoinInfo, JoinOptions, RemoteVideo } from '../../plugin/dto/video-room'
+import { JanusId, JoinInfo, JoinOptions, RemoteVideo } from '../../plugin/dto/video-room';
 import { MediaDevices, WebRTC } from '../../plugin/base/shims/definitions';
 
 class VideoRoomBuilder {
