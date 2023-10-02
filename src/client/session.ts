@@ -13,7 +13,7 @@ import { WebRTC } from '../plugin/base/shims/definitions';
 class Session extends TransactionManager {
   private connection: Connection | null;
   private readonly id: string;
-  private plugins: {};
+  private plugins: { [key: string]: Plugin };
   private keepAlivePeriod: number;
   private keepAliveTimer?: Timer | null;
   private readonly mediaDevices: MediaDevices;
@@ -57,7 +57,7 @@ class Session extends TransactionManager {
     return this.connection.send(message);
   }
 
-  attachPlugin(name: string): Promise<any> {
+  attachPlugin(name: string): Promise<Plugin> {
     return this.sendSync({ janus: 'attach', plugin: name }, this);
   }
 

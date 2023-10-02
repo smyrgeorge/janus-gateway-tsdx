@@ -22,7 +22,7 @@ export interface ConnectionOptions {
 class Connection extends TransactionManager {
   private readonly id: string;
   private readonly address: string;
-  private readonly sessions: {};
+  private readonly sessions: { [key: string]: Session };
   private readonly options: ConnectionOptions;
   private readonly websocketConnection: Websocket;
   private readonly mediaDevices: MediaDevices;
@@ -59,20 +59,20 @@ class Connection extends TransactionManager {
     return this.websocketConnection.open(this.address, 'janus-protocol').return(this);
   }
 
-  close(): Promise<any> {
+  async close(): Promise<boolean> {
     if (this.websocketConnection.isOpened()) {
       return Promise.map(this.getSessionList(), session => session.cleanup())
         .then(() => this.websocketConnection.close())
         .then(() => this.emit('close'));
     }
-    return Promise.resolve();
+    return true;
   }
 
   isClosed(): boolean {
     return this.websocketConnection.isClosed();
   }
 
-  createSession(): Promise<any> {
+  createSession(): Promise<Session> {
     return this.sendSync({ janus: 'create' }, this);
   }
 
@@ -97,7 +97,7 @@ class Connection extends TransactionManager {
     delete this.sessions[sessionId];
   }
 
-  send(message: any): Promise<any> {
+  send(message: { token: string; apisecret: string; transaction: string }): Promise<void> {
     if (this.options.token) {
       message.token = this.options.token;
     }
@@ -106,15 +106,15 @@ class Connection extends TransactionManager {
       message.apisecret = this.options.apisecret;
     }
 
-    if (!message['transaction']) {
-      message['transaction'] = Transaction.generateRandomId();
+    if (!message.transaction) {
+      message.transaction = Transaction.generateRandomId();
     }
 
     return this.websocketConnection.send(message);
   }
 
-  processOutcomeMessage(message: any): Promise<any> {
-    if ('create' === message['janus']) {
+  async processOutcomeMessage(message: JanusMessage): Promise<JanusMessage> {
+    if ('create' === message.janus) {
       return this.onCreate(message);
     }
 
@@ -123,11 +123,11 @@ class Connection extends TransactionManager {
       if (this.hasSession(sessionId)) {
         return this.getSession(sessionId).processOutcomeMessage(message);
       } else {
-        return Promise.reject(new Error(`Invalid session: [${sessionId}]`));
+        throw new Error(`Invalid session: [${sessionId}]`);
       }
     }
 
-    return Promise.resolve(message);
+    return message;
   }
 
   processIncomeMessage(msg: JanusMessage): Promise<any> {
@@ -151,9 +151,9 @@ class Connection extends TransactionManager {
     return `[Connection] ${JSON.stringify({ id: this.id, address: this.address })}`;
   }
 
-  private onCreate(outMsg: JanusMessage): Promise<JanusMessage> {
+  private async onCreate(outMsg: JanusMessage): Promise<JanusMessage> {
     this.addTransaction(
-      new Transaction(outMsg['transaction'], (msg: JanusMessage) => {
+      new Transaction(outMsg.transaction, (msg: JanusMessage) => {
         if ('success' === msg.get('janus')) {
           let sessionId = msg.get('data', 'id');
           this.addSession(new Session(this, sessionId, this.mediaDevices, this.webRTC));
@@ -164,7 +164,7 @@ class Connection extends TransactionManager {
       })
     );
 
-    return Promise.resolve(outMsg);
+    return outMsg;
   }
 
   private initWebsocketListeners() {

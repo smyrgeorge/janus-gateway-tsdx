@@ -24,7 +24,7 @@ class TransactionManager extends EventEmitter {
     this.getTransactions().add(tx);
   }
 
-  sendSync(msg: any, executor: Session | Connection | Plugin): Promise<any> {
+  sendSync<T>(msg: any, executor: Session | Connection | Plugin): Promise<T> {
     if (!msg.transaction) {
       msg.transaction = Transaction.generateRandomId();
     }
