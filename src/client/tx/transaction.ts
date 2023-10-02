@@ -9,11 +9,13 @@ class Transaction {
   constructor(id: string, callback: Function, timeout: number = 30000) {
     this.id = id;
     this.callback = () => undefined;
-
+    //@ts-ignore
     let timeoutRejection;
 
     this.promise = new Promise((resolve, reject) => {
+      //@ts-ignore
       this.callback = message => {
+        //@ts-ignore
         clearTimeout(timeoutRejection);
 
         let result;
@@ -42,6 +44,7 @@ class Transaction {
       .substring(2, 12);
   }
 
+  //@ts-ignore
   execute(message): Promise<any> {
     if (!this.isExecuted) {
       this.isExecuted = true;

@@ -12,7 +12,7 @@ class JanusMessage {
   getError(): any {
     return this.get('error');
   }
-
+  //@ts-ignore
   get(name, ...names: string[]): any {
     let result = this.plainMessage[name];
 

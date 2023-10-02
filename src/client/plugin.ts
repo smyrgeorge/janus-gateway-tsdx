@@ -23,12 +23,14 @@ class Plugin extends TransactionManager {
   }
 
   static create(session: Session, name: string, id: string, mediaDevices: MediaDevices, webRTC: WebRTC): Plugin {
+    //@ts-ignore
     let aClass = Plugin.types[name];
     if (aClass) return new aClass(session, name, id, mediaDevices, webRTC);
     return new Plugin(session, name, id);
   }
-
+  //@ts-ignore
   static register(name: string, aClass) {
+    //@ts-ignore
     this.types[name] = aClass;
   }
 
@@ -97,6 +99,7 @@ class Plugin extends TransactionManager {
 
   sendWithTransaction(options: any): Promise<any> {
     let transactionId = Transaction.generateRandomId();
+    //@ts-ignore
     let transaction = new Transaction(transactionId, msg => {
       let errorMessage = msg.getError();
       if (!errorMessage) {

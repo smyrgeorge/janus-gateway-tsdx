@@ -14,7 +14,7 @@ class MediaStreamPlugin extends MediaEntityPlugin {
     return super._destroy(id, options);
   }
 
-  _watch(id: string | number, watchOptions: any, answerOptions: any): Promise<JanusPluginMessage> {
+  _watch(id: string | number, watchOptions: any = null, answerOptions: RTCAnswerOptions): Promise<JanusPluginMessage> {
     let body = Object.assign({ request: 'watch', id }, watchOptions);
     return this.sendWithTransaction({ body }).then(response => {
       let jsep = response.get('jsep');

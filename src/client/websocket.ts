@@ -5,7 +5,7 @@ class Websocket extends EventEmitter {
   // @ts-ignore
   private ws: WebSocket;
 
-  open(address: string, protocol: string): Promise<any> {
+  open(address: string, protocol: string): Promise<Websocket> {
     return new Promise((resolve, reject) => {
       this.ws = new WebSocket(address, protocol ?? '');
 
@@ -28,7 +28,7 @@ class Websocket extends EventEmitter {
     return !this.ws || this.ws.CLOSED === this.ws.readyState || this.ws.CLOSING === this.ws.readyState;
   }
 
-  close(): Promise<any> {
+  close(): Promise<void> {
     if (this.isClosed()) return Promise.resolve();
     return new Promise(resolve => {
       this.onClose();
@@ -36,7 +36,7 @@ class Websocket extends EventEmitter {
     });
   }
 
-  send(message: any): Promise<any> {
+  send(message: any): Promise<void> {
     if (this.isOpened()) {
       return this.onSend(message);
     } else if (!this.ws || this.ws.CONNECTING === this.ws.readyState) {
@@ -54,13 +54,13 @@ class Websocket extends EventEmitter {
     }
   }
 
-  private queue(message: any): Promise<any> {
+  private queue(message: any): Promise<void> {
     return new Promise(resolve => {
       this.once('open', () => this.onSend(message).then(() => resolve()));
     });
   }
 
-  private onSend(message: any): Promise<any> {
+  private onSend(message: any): Promise<void> {
     return new Promise(resolve => {
       this.ws.send(JSON.stringify(message));
       resolve();
