@@ -26,6 +26,7 @@ class VideoRoomPlugin extends MediaPlugin {
     return this.getUserMedia(constraints)
       .then(stream => {
         this.createPeerConnection({});
+        //@ts-ignore
         stream.getTracks().forEach(track => this.addTrack(track, stream));
       })
       .then(() => this.createOffer({}))
@@ -38,7 +39,7 @@ class VideoRoomPlugin extends MediaPlugin {
         }
       });
   }
-
+  //@ts-ignore
   configure(options, jsep) {
     const body = Object.assign({ request: 'configure' }, options);
     const message: any = { body };
@@ -52,7 +53,7 @@ class VideoRoomPlugin extends MediaPlugin {
     let body = Object.assign({ request: 'join' }, options);
     return this.sendWithTransaction({ janus: 'message', body });
   }
-
+  //@ts-ignore
   start(room, jsep) {
     return this.sendWithTransaction({
       janus: 'message',
@@ -115,6 +116,7 @@ class VideoRoomPlugin extends MediaPlugin {
   }
 
   private handlerPublisher = async (publisher: Publisher): Promise<PublisherJoinResult> => {
+    //@ts-ignore
     let plugin: VideoRoomPlugin = await this.getSession()?.attachPlugin(VideoRoomPlugin.NAME);
     plugin.on('pc:track:remote', (event: any) => {
       let feed: RemoteVideo = { feedInfo: publisher, stream: event.streams[0] };

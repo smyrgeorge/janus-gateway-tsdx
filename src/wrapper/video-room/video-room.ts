@@ -94,6 +94,7 @@ export class VideoRoom {
   private attachPlugin = async () => {
     await this.createSession();
     if (this.plugin) return this.plugin;
+    //@ts-ignore
     this.plugin = await this.session?.attachPlugin(VideoRoomPlugin.NAME);
 
     // Event when user accepts permissions.

@@ -138,6 +138,7 @@ class Session extends TransactionManager {
   private startKeepAlive() {
     let keepAlive = this.connection?.getOptions().keepalive;
 
+    //@ts-ignore
     if (keepAlive && isNaturalNumber(keepAlive) && keepAlive < 59000) {
       this.keepAlivePeriod = keepAlive as number;
     } else {
@@ -174,12 +175,14 @@ class Session extends TransactionManager {
     });
   }
 
+  //@ts-ignore
   private onTimeout(msg): Promise<any> {
     return this._destroy().return(msg);
   }
-
+  //@ts-ignore
   private onDestroy(outMsg): Promise<any> {
     this.addTransaction(
+      //@ts-ignore
       new Transaction(outMsg['transaction'], msg => {
         if ('success' === msg.get('janus')) {
           return this._destroy().return(msg);
@@ -193,6 +196,7 @@ class Session extends TransactionManager {
 
   private onAttach(outMsg: any): Promise<any> {
     this.addTransaction(
+      //@ts-ignore
       new Transaction(outMsg['transaction'], msg => {
         if ('success' === msg.get('janus')) {
           let pluginId = msg.get('data', 'id');

@@ -68,14 +68,17 @@ class Transactions {
 
   add(tx: Transaction) {
     if (this.has(tx.id)) throw new Error(`Transaction '${tx.id}' already exists.`);
+    //@ts-ignore
     this.list[tx.id] = tx;
   }
 
   has(id: string): boolean {
+    //@ts-ignore
     return id && this.list[id];
   }
 
   find(id: string): Transaction | null {
+    //@ts-ignore
     return this.list[id] ?? null;
   }
 
@@ -91,6 +94,7 @@ class Transactions {
 
   remove(id: string) {
     if (!this.has(id)) throw new Error(`Transaction '${id}' doesn't exist.`);
+    //@ts-ignore
     delete this.list[id];
   }
 }

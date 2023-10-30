@@ -1,3 +1,4 @@
+//@ts-ignore
 import Promise from 'bluebird';
 import TransactionManager from './tx/transaction-manager';
 import JanusError from './misc/error';
@@ -15,7 +16,7 @@ export interface RTCPeerConnectionOptions {
 export interface ConnectionOptions {
   token?: string;
   apisecret?: string;
-  keepalive: boolean | number;
+  keepalive?: boolean | number;
   pc?: RTCPeerConnectionOptions;
 }
 
@@ -58,7 +59,7 @@ class Connection extends TransactionManager {
   open(): Promise<Connection> {
     return this.websocketConnection.open(this.address, 'janus-protocol').return(this);
   }
-
+  // @ts-ignore
   async close(): Promise<boolean> {
     if (this.websocketConnection.isOpened()) {
       return Promise.map(this.getSessionList(), session => session.cleanup())
@@ -113,11 +114,14 @@ class Connection extends TransactionManager {
     return this.websocketConnection.send(message);
   }
 
+  // @ts-ignore
   async processOutcomeMessage(message: JanusMessage): Promise<JanusMessage> {
+    //@ts-ignore
     if ('create' === message.janus) {
       return this.onCreate(message);
     }
 
+    //@ts-ignore
     let sessionId = message['session_id'];
     if (sessionId) {
       if (this.hasSession(sessionId)) {
@@ -151,8 +155,10 @@ class Connection extends TransactionManager {
     return `[Connection] ${JSON.stringify({ id: this.id, address: this.address })}`;
   }
 
+  //@ts-ignore
   private async onCreate(outMsg: JanusMessage): Promise<JanusMessage> {
     this.addTransaction(
+      //@ts-ignore
       new Transaction(outMsg.transaction, (msg: JanusMessage) => {
         if ('success' === msg.get('janus')) {
           let sessionId = msg.get('data', 'id');

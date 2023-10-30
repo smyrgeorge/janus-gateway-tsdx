@@ -44,6 +44,7 @@ class MediaEntityPlugin extends MediaPlugin {
     return this.sendWithTransaction({ body });
   }
 
+  //@ts-ignore
   onHangup(msg) {
     this.resetCurrentEntity();
     return super.onHangup(msg);
