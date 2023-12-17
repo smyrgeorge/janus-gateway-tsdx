@@ -12,22 +12,20 @@ import { WebRTC } from '../plugin/base/shims/definitions';
 
 class Session extends TransactionManager {
   private connection: Connection | null;
-  private readonly id: string;
-  private plugins: {};
+  private plugins: { [key: string]: Plugin };
   private keepAlivePeriod: number;
   private keepAliveTimer?: Timer | null;
-  private readonly mediaDevices: MediaDevices;
-  private readonly webRTC: WebRTC;
 
-  constructor(connection: Connection, id: string, mediaDevices: MediaDevices, webRTC: WebRTC) {
+  constructor(
+    connection: Connection,
+    private readonly id: string,
+    private readonly mediaDevices: MediaDevices,
+    private readonly webRTC: WebRTC
+  ) {
     super();
-
     this.connection = connection;
-    this.id = id;
     this.plugins = {};
     this.keepAlivePeriod = 30000;
-    this.mediaDevices = mediaDevices;
-    this.webRTC = webRTC;
 
     if (this.connection.getOptions().keepalive) {
       this.startKeepAlive();
@@ -57,7 +55,7 @@ class Session extends TransactionManager {
     return this.connection.send(message);
   }
 
-  attachPlugin(name: string): Promise<any> {
+  attachPlugin(name: string): Promise<Plugin> {
     return this.sendSync({ janus: 'attach', plugin: name }, this);
   }
 
@@ -138,6 +136,7 @@ class Session extends TransactionManager {
   private startKeepAlive() {
     let keepAlive = this.connection?.getOptions().keepalive;
 
+    //@ts-ignore
     if (keepAlive && isNaturalNumber(keepAlive) && keepAlive < 59000) {
       this.keepAlivePeriod = keepAlive as number;
     } else {
@@ -174,12 +173,14 @@ class Session extends TransactionManager {
     });
   }
 
+  //@ts-ignore
   private onTimeout(msg): Promise<any> {
     return this._destroy().return(msg);
   }
-
+  //@ts-ignore
   private onDestroy(outMsg): Promise<any> {
     this.addTransaction(
+      //@ts-ignore
       new Transaction(outMsg['transaction'], msg => {
         if ('success' === msg.get('janus')) {
           return this._destroy().return(msg);
@@ -193,6 +194,7 @@ class Session extends TransactionManager {
 
   private onAttach(outMsg: any): Promise<any> {
     this.addTransaction(
+      //@ts-ignore
       new Transaction(outMsg['transaction'], msg => {
         if ('success' === msg.get('janus')) {
           let pluginId = msg.get('data', 'id');

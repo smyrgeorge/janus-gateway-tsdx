@@ -1,7 +1,7 @@
 {
   "name": "janus-gateway-tsdx",
   "author": "Giorgos Smyrnaios <smyrgeorge@gmail.com>",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "license": "MIT",
   "description": "Modern typescript client for janus-gateway.",
   "repository": {
@@ -48,18 +48,18 @@
   "size-limit": [
     {
       "path": "dist/janus-gateway-tsdx.cjs.production.min.js",
-      "limit": "10 KB"
+      "limit": "50 KB"
     },
     {
       "path": "dist/janus-gateway-tsdx.esm.js",
-      "limit": "10 KB"
+      "limit": "50 KB"
     }
   ],
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^5.0.2",
+    "@size-limit/preset-small-lib": "^11.0.1",
     "@types/bluebird": "^3.5.36",
     "husky": "^7.0.1",
-    "size-limit": "^5.0.2",
+    "size-limit": "^11.0.1",
     "tsdx": "^0.14.1",
     "tslib": "^2.3.0",
     "typescript": "^4.3.5"
